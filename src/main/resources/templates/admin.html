@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		  integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<!-- Optional JavaScript -->
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<title>Admin panel</title>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+	<span class="text-white">
+    	<a class="text-white font-weight-bold" id="userLogin" sec:authentication="principal.username"></b></a>
+		<a> with roles: </a>
+		<a class="text-white" sec:authentication="principal.authorities" id="rolesLogin"> </a>
+	</span>
+
+	<button class="navbar-toggler" type="button"
+			data-toggle="collapse" data-target="#navbarText"
+			aria-controls="navbarText" aria-expanded="true" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+	<div class="collapse navbar-collapse" id="navbarText">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item active">
+			</li>
+			</ul>
+		<p><a class="text-muted bg-dark" href="/logout">Logout</a></p>
+	</div>
+</nav>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-2 p-0 bg-white"
+			 style="/*margin-top: 20px;*/ padding-top: 20px; padding-left: 0; padding-right: 0; height: 100vh">
+			<ul class="nav nav-pills flex-column">
+				<li class="nav-item">
+					<a class="nav-link active" data-toggle="tab" href="#Admin">Admin</a>
+				</li>
+				<div sec:authorize="hasAuthority('USER')">
+					<li class="nav-item">
+						<a class="nav-link"
+						   href="/user">User</a>
+					</li>
+				</div>
+			</ul>
+		</div>
+		<div class="col-md-10 bg-light"
+			 style="padding-top: 20px; height: 100vh">
+			<div class="tab-content">
+				<div class="tab-pane fade show active" id="Admin">
+					<h2 class="h2">Admin panel</h2>
+					<ul class="nav nav-tabs">
+						<li class="nav-item">
+							<a class="nav-link active"
+							   id="tableUsers"
+							   data-toggle="tab"
+							   role="tab"
+							   aria-controls="UsersTable"
+							   aria-selected="true"
+							   href="#UsersTable">Users table</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link"
+							   id="addUser"
+							   data-toggle="tab"
+							   role="tab"
+							   aria-controls="NewUser"
+							   aria-selected="false"
+							   href="#NewUser">New User</a>
+						</li>
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane fade show active" id="UsersTable">
+							<div class="card">
+								<h5 class="card-header">All users</h5>
+								<div class="card-body text-left">
+									<table class="table table-striped">
+									<thead>
+									<tr>
+											<th>ID</th>
+											<th>First Name</th>
+											<th>Last Name</th>
+											<th>Age</th>
+											<th>Email</th>
+											<th>Role</th>
+											<th>Edit</th>
+											<th>Delete</th>
+										</tr>
+									</thead>
+									<tbody id="usersData">
+									</tbody>
+									</table>
+									<div class="modal fade"
+										 id="modalEdit"
+										 tabindex="-1" role="dialog"
+										 aria-labelledby="TitleModalLabel" aria-hidden="true">
+										<div class="modal-dialog" role="document">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h5 class="modal-title" id="editModal">Edit user</h5>
+													<button type="button" class="close"
+															data-dismiss="modal"
+															aria-label="Close">
+														<span aria-hidden="true">&times;</span>
+													</button>
+												</div>
+												<form id="patchForm" name="patchForm">
+													<div class="modal-body">
+														<div class="container col-6 text-center" >
+															<div class="form-group">
+																<div>
+																	<b><label for="idPatch">ID</label></b>
+																	<input type="text"
+																		   class="form-control"
+																		   id="idPatch"
+																		   name="id"
+																		   readonly>
+																</div>
+																<div>
+																	<b><label for="namePatch">First name</label></b>
+																	<input type="text"
+																		   class="form-control"
+																		   id="namePatch"
+																		   name="name">
+																</div>
+																<div>
+																	<b><label for="lastNamePatch">Last name</label></b>
+																	<input type="text"
+																		   class="form-control"
+																		   id="lastNamePatch"
+																		   name="lastName">
+																</div>
+																<div>
+																	<b><label for="agePatch">Age</label></b>
+																	<input type="number"
+																		   class="form-control"
+																		   id="agePatch"
+																		   name="age">
+																</div>
+																<div>
+																	<b><label for="userNamePatch">Email</label></b>
+																	<input type="email"
+																		   class="form-control"
+																		   id="userNamePatch"
+																		   name="userName">
+																</div>
+																<div id="password-div">
+																	<b><label for="passwordPatch">Password</label></b>
+																	<input type="password"
+																		   class="form-control"
+																		   id="passwordPatch"
+																		   name="password"
+																		   autocomplete="current-password">
+																</div>
+																<div>
+																	<b><label class="col-4 col-form-label">Role</label></b>
+																	<select multiple class="form-control form-control-sm"
+																			id="rolesPatch"
+																			name="roles" size="2">
+																	</select>
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class="modal-footer">
+														<button type="button"
+																class="btn btn-secondary"
+																data-dismiss="modal"
+																id="closeViewPatch">Close</button>
+														<button type="submit"
+																class="btn btn-primary"
+																id="patchUserBtn">Edit</button>
+													</div>
+												</form>
+											</div>
+										</div>
+									</div>
+									<div class="modal fade"
+										 id="modalDel"
+										 tabindex="-1"
+										 role="dialog"
+										 aria-labelledby="deleteModalLabel"
+										 aria-hidden="true">
+										<div class="modal-dialog" role="document">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h5 class="modal-title" id="deleteModal">Delete user</h5>
+													<button type="button" class="close"
+															data-dismiss="modal"
+															aria-label="Close">
+														<span aria-hidden="true">&times;</span>
+													</button>
+												</div>
+												<form id="deleteForm">
+													<div class="modal-body">
+														<div class="container col-6 text-center">
+															<div class="form-group">
+																<div>
+																	<b><label for="id_del">ID</label></b>
+																	<input type="text"
+																		   class="form-control"
+																		   id="id_del"
+																		   name="id"
+																		   readonly>
+																</div>
+																<div>
+																	<b><label for="name_del">First name</label></b>
+																	<input type="text"
+																		   class="form-control"
+																		   id="name_del"
+																		   name="name"
+																		   readonly>
+																</div>
+																<div>
+																	<b><label for="lastName_del">Last name</label></b>
+																	<input type="text"
+																		   class="form-control"
+																		   id="lastName_del"
+																		   name="lastName"
+																		   readonly>
+																</div>
+																<div>
+																	<b><label for="age_del">Age</label></b>
+																	<input type="number"
+																		   class="form-control"
+																		   id="age_del"
+																		   name="age"
+																		   readonly>
+																</div>
+																<div>
+																	<b><label for="userName_del">Email</label></b>
+																	<input type="text"
+																		   class="form-control"
+																		   id="userName_del"
+																		   name="userName"
+																		   readonly>
+																</div>
+																<div>
+																	<b><label for="password_del">Password</label></b>
+																	<input type="password"
+																		   class="form-control"
+																		   id="password_del"
+																		   name="password"
+																		   autocomplete="current-password"
+																		   readonly>
+																</div>
+																<div>
+																	<b><label class="col-4 col-form-label">Role</label></b>
+																	<select multiple
+																			class="form-control form-control-sm"
+																			id="rolesDelete"
+																			name="roles"
+																			size="2">
+																	</select>
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class="modal-footer">
+														<button type="button"
+																id="closeViewDel"
+																class="btn btn-secondary"
+																data-dismiss="modal">Close
+														</button>
+														<button type="submit"
+																id="deleteUserBtn"
+																class="btn btn-primary btn-danger">Delete
+														</button>
+													</div>
+												</form>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!--/-->
+						<div class="tab-pane fade" id="NewUser">
+							<div class="card">
+								<div class="card-header">
+									<div class="m-1">
+										<h5>Add new user</h5>
+									</div>
+								</div>
+								<div class="card-body">
+									<div class="col-md bg-white border">
+										<form id="addUserForm"
+											align="center"
+											class="offset-md-4 col-md-3 mt-4 mb-4 form-justify-content-center"
+											method="POST">
+												<p>
+													<label for="name"><b>First name</b>
+														<input id="name"
+															   name="name"
+															   type="text"	required/>
+													</label>
+													<br/>
+													<label for="lastName"><b>Last name</b>
+														<input id="lastName"
+															   type="text"
+															   name="lastName">
+													</label>
+													<br/>
+													<label for="age"><b>Age</b>
+														<input id="age"
+															   type="text"
+															   name="age">
+													</label>
+													<br/>
+													<label for="userName"><b>Email</b>
+														<input id="userName"
+															   type="email"
+															   name="userName">
+													</label>
+													<br/>
+													<label for="password"><b>Password</b>
+														<input id="password"
+															   type="password"
+															   name="password">
+													</label>
+													<br/>
+													<b><label for="roles">Role</label></b>
+													<select multiple class="form-control form-control-sm"
+															id="roles" name="roles" size="2"></select>
+												</p>
+											<button id="addUserBtn"
+													type="submit"
+													class="btn btn-success btn-lg"
+													>Add new user
+											</button>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="errorModal"  aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="errorModalModalLabel">Error</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body alert alert-block alert-danger" id="errorBody">
+				<a>Error!</a>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeErrorTab">Ok</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script type="text/javascript" th:src="@{admin.js}" src="../static/admin.js"></script>
+</body>
+</html>
+
