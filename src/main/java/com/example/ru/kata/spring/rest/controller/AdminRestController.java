@@ -35,17 +35,6 @@ public class AdminRestController {
         return new ResponseEntity<>(user,headers,HttpStatus.CREATED);
     }
 
-    /*    @PostMapping
-    public ResponseEntity<HttpStatus> userRegister(@RequestBody @Valid User user, BindingResult bindingResult) {
-        userExistCheck.validate(user, bindingResult);
-        if(bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(HttpStatus.BAD_REQUEST);
-        } else {
-            userService.save(user);
-            return ResponseEntity.ok(HttpStatus.OK);
-        }
-    }
-*/
     @GetMapping("/admin")
     public ResponseEntity<List<User>> listUsers() {
         return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
