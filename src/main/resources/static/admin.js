@@ -224,17 +224,13 @@ function userSelectRole(roles, elemId) {
         .then(response => response.json())
         .then(rest => {
             let rolesToForm = document.getElementById(elemId)
-            let select = 0
-            let unselect = 0
             let rowElement = ''
             rest.forEach(r => {
                 let roleCurrent = roles.map(roles => roles.name)
                 if (roleCurrent.includes(r.name)) {
-                    select++
                     rowElement += `<option value='${r.id}' selected>
                                    ${r.name}</option>`
                 } else if (!roleCurrent.includes(r.name)) {
-                    unselect++
                     rowElement += `<option value='${r.id}'>
                                    ${r.name}</option>`
                 }
