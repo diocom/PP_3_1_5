@@ -1,8 +1,9 @@
 const userLogin = document.getElementById('userLogin')
 
 $(async function () {
-        await showAdmin();
-        await listRoles();
+     await showAdmin();
+     await listRoles();
+     userSelectRole();
     }
 );
 async function showAdmin() {
@@ -23,7 +24,8 @@ async function showAdmin() {
                 <td>${userFromRest.userName}</td>
                 <td>${userFromRest.roles.map(m => m.name)}</td>
                 <td>
-                    <button type="button" class="btn btn-info btn-sm"
+                    <button type="button" 
+                            class="btn btn-info btn-sm"
                             id="editBtn"
                             data-toggle="modal"
                             data-index="${userFromRest.id}"
@@ -48,8 +50,8 @@ async function showAdmin() {
         })
 }
 
-function listRoles() {
-    fetch("http://localhost:8088/api/admin/roles")
+async function listRoles() {
+    await fetch("http://localhost:8088/api/admin/roles")
         .then(response => response.json())
         .then(data => {
             let lsRoles = ''
@@ -57,7 +59,7 @@ function listRoles() {
                 if (element.id === 2) {
                     lsRoles +=
                         `
-                    <option value='${element.id}' selected>
+                    <option value='${element.id}'>
                     ${element.name}
                     </option>
                     `
